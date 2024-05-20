@@ -1,5 +1,5 @@
 <script setup>
-import { reactive } from "vue";
+import { ref,reactive } from "vue";
 import Image from "./Image.vue";
 
 const dataList = reactive([
@@ -44,6 +44,12 @@ const columns = reactive([
     width: 60,
   },
   {
+    title: "单选框",
+    key: "radio",
+    dataIndex: "radio",
+    width: 200,
+  },
+  {
     title: "图片",
     key: "img",
     dataIndex: "img",
@@ -60,6 +66,9 @@ const columns = reactive([
     width: 250,
   },
 ]);
+
+//TODO: 表头不会跟着响应式变化
+const promptShowType = ref("option1");
 </script>
 
 <template>
@@ -73,7 +82,27 @@ const columns = reactive([
       :locale="{ emptyText: '暂无数据' }"
       stripe
     >
+      <template #headerCell="{ column }">
+
+        <template v-if="column.key === 'radio'">
+          <div class="header-cell">
+            <el-radio-group v-model="promptShowType">
+              <el-radio value="option1" size="large">选项1</el-radio>
+              <el-radio value="option2" size="large">选项1</el-radio>
+            </el-radio-group>
+          </div>
+        </template>
+
+      </template>
+
       <template #bodyCell="{ record, index, column }">
+        <template v-if="column.key === 'radio'">
+          <el-radio-group v-model="promptShowType">
+            <el-radio value="option1" size="large">选项1</el-radio>
+            <el-radio value="option2" size="large">选项1</el-radio>
+          </el-radio-group>
+        </template>
+
         <!-- 图片 -->
         <template v-if="column.key === 'img'">
           <div class="image-column">
@@ -99,7 +128,13 @@ const columns = reactive([
 </template>
 
 <style scoped>
-:deep(.surely-table-body-cell:nth-of-type(3n)) {
+.header-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+:deep(.surely-table-body-cell:nth-of-type(4n)) {
   overflow-y: auto !important;
 
   .surely-table-cell-content {
